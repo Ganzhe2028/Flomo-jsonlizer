@@ -1,0 +1,45 @@
+[project]
+name = "jsonl-extracter"
+version = "0.1.0"
+description = "JSONL-based memo system: flomo HTML export → structured JSONL truth layer → Parquet/DuckDB analytics"
+requires-python = ">=3.11"
+[project.license]
+text = "MIT"
+
+dependencies = [
+    "beautifulsoup4>=4.12",
+    "duckdb>=1.0",
+    "pyarrow>=17.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "TCH"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+pythonpath = ["."]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+explicit_package_bases = true
+mypy_path = ["."]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
