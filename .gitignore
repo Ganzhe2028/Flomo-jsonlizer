@@ -1,2 +1,17 @@
-/store/images
-/raw
+# Store layer
+store/memos.jsonl
+store/images.jsonl
+store/missing_images.jsonl
+store/images/
+
+# Raw exports
+raw/
+
+# Analytics layer
+analytics/
+
+# Preview layer
+preview/
+
+__pycache__/
+*.pyc

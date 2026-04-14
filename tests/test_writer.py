@@ -13,8 +13,8 @@ def test_write_jsonl_memos(tmp_path: Path) -> None:
         MemoRecord(
             memo_uid="flomo-test-20260101--0001",
             created_at="2026-01-01T10:00:00",
-            source_export="2026/flomo@Test-20260101",
-            source_html="2026/flomo@Test-20260101/test.html",
+            source_export="2026/flomo@ExampleUser-20260101",
+            source_html="2026/flomo@ExampleUser-20260101/test.html",
             source_memo_ordinal=1,
             body_md="Hello",
             image_count=0,
@@ -39,7 +39,7 @@ def test_write_jsonl_images(tmp_path: Path) -> None:
             memo_uid="flomo-test-20260101--0001",
             order_in_memo=1,
             image_relpath="store/images/2026/2026-01/flomo-test-20260101--0001--01.png",
-            source_relpath="2026/flomo@Test-20260101/file/2026-01-01/123/abc.png",
+            source_relpath="2026/flomo@ExampleUser-20260101/file/2026-01-01/123/abc.png",
         )
     ]
     StoreWriter._write_jsonl(store_root / "images.jsonl", images)
@@ -58,8 +58,8 @@ def test_write_jsonl_utf8(tmp_path: Path) -> None:
         MemoRecord(
             memo_uid="flomo-test-20260101--0001",
             created_at="2026-01-01T10:00:00",
-            source_export="2026/flomo@Test-20260101",
-            source_html="2026/flomo@Test-20260101/笔记.html",
+            source_export="2026/flomo@ExampleUser-20260101",
+            source_html="2026/flomo@ExampleUser-20260101/笔记.html",
             source_memo_ordinal=1,
             body_md="中文内容 #标签",
             image_count=0,

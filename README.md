@@ -12,11 +12,11 @@ A structured data pipeline that converts flomo HTML exports into a JSONL truth l
 
 ## Architecture
 
-```
-raw/                          # Source HTML exports (read‑only)
+```text
+raw/                          # Source HTML exports (local only, not committed)
 ├── 2025/
-│   └── flomo@isaacbao-20250101/
-│       ├── IsaacBao的笔记.html
+│   └── flomo@exampleuser-20250101/
+│       ├── ExampleUser的笔记.html
 │       └── file/
 │           └── 2025‑01‑01/
 │               └── {hash}/
@@ -24,7 +24,7 @@ raw/                          # Source HTML exports (read‑only)
 └── 2026/
     └── ...
 
-store/                        # JSONL truth layer
+store/                        # JSONL truth layer (local only, not committed)
 ├── memos.jsonl               # Memo records
 ├── images.jsonl              # Image records
 ├── missing_images.jsonl      # Missing image records
@@ -49,12 +49,12 @@ Three core tables (see [`docs/schema.md`](docs/schema.md) for full details):
 
 ```json
 {
-  "memo_uid": "flomo‑isaacbao‑20250101‑001",
+  "memo_uid": "flomo‑exampleuser‑20250101‑001",
   "created_at": "2025‑01‑01T12:34:56Z",
   "body_md": "Today I learned…",
   "image_count": 2,
   "batch_label": "20250101",
-  "source_relpath": "2025/flomo@isaacbao‑20250101/IsaacBao的笔记.html",
+  "source_relpath": "2025/flomo@exampleuser‑20250101/ExampleUser的笔记.html",
   "ordinal": 1
 }
 ```
@@ -63,10 +63,10 @@ Three core tables (see [`docs/schema.md`](docs/schema.md) for full details):
 
 ```json
 {
-  "image_uid": "flomo‑isaacbao‑20250101‑001‑img‑1",
-  "memo_uid": "flomo‑isaacbao‑20250101‑001",
-  "image_relpath": "images/2025/2025‑01/flomo‑isaacbao‑20250101‑001‑img‑1.png",
-  "source_relpath": "2025/flomo@isaacbao‑20250101/file/2025‑01‑01/{hash}/image.png",
+  "image_uid": "flomo‑exampleuser‑20250101‑001‑img‑1",
+  "memo_uid": "flomo‑exampleuser‑20250101‑001",
+  "image_relpath": "images/2025/2025‑01/flomo‑exampleuser‑20250101‑001‑img‑1.png",
+  "source_relpath": "2025/flomo@exampleuser‑20250101/file/2025‑01‑01/{hash}/image.png",
   "ordinal": 1
 }
 ```
@@ -75,9 +75,9 @@ Three core tables (see [`docs/schema.md`](docs/schema.md) for full details):
 
 ```json
 {
-  "image_uid": "flomo‑isaacbao‑20250101‑001‑img‑2",
-  "memo_uid": "flomo‑isaacbao‑20250101‑001",
-  "source_relpath": "2025/flomo@isaacbao‑20250101/file/2025‑01‑01/{hash}/missing.png"
+  "image_uid": "flomo‑exampleuser‑20250101‑001‑img‑2",
+  "memo_uid": "flomo‑exampleuser‑20250101‑001",
+  "source_relpath": "2025/flomo@exampleuser‑20250101/file/2025‑01‑01/{hash}/missing.png"
 }
 ```
 
@@ -105,29 +105,42 @@ Three core tables (see [`docs/schema.md`](docs/schema.md) for full details):
 pip install beautifulsoup4 duckdb pyarrow
 ```
 
-### 2. Import raw exports
+### 2. Try the sample data
+
+```bash
+python scripts/build_store.py --raw-root examples/raw --store-root tmp/example-store
+python scripts/validate_store.py --store-root tmp/example-store
+```
+
+### 3. Import your own raw exports
 
 ```bash
 python scripts/build_store.py --raw-root raw --store-root store
 ```
 
-### 3. Validate the store
+### 4. Validate the store
 
 ```bash
 python scripts/validate_store.py --store-root store
 ```
 
-### 4. Build analytics
+### 5. Build analytics
 
 ```bash
 python scripts/build_analytics.py --store-root store --analytics-dir analytics
 ```
 
-### 5. Build preview
+### 6. Build preview
 
 ```bash
 python scripts/build_preview.py --store-root store --preview-dir preview
 ```
+
+## Privacy
+
+- Real `raw/` exports and generated `store/` data are now ignored by git and stay local by default.
+- The repository only commits sanitized sample input under `examples/raw/` for onboarding and testing.
+- Before sharing any generated artifacts, review memo text, source paths, and copied media for personal data.
 
 ## macOS Launcher
 
@@ -162,7 +175,7 @@ python -m pytest tests/ -v
 
 ### Project structure
 
-```
+```text
 src/
 ├── models.py          # Dataclasses: MemoRecord, ImageRecord, MissingImageRecord
 ├── parser.py          # FlomoParser: HTML → markdown, batch discovery

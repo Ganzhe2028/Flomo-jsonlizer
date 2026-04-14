@@ -60,10 +60,10 @@ memo_system/
 
 ```json
 {
-  "memo_uid": "flomo-isaacbao-20260301--0255",
+  "memo_uid": "flomo-exampleuser-20260301--0255",
   "created_at": "2026-03-04T13:06:44",
-  "source_export": "2026/flomo@IsaacBao-20260301",
-  "source_html": "2026/flomo@IsaacBao-20260301/IsaacBao的笔记.html",
+  "source_export": "2026/flomo@ExampleUser-20260301",
+  "source_html": "2026/flomo@ExampleUser-20260301/ExampleUser的笔记.html",
   "source_memo_ordinal": 255,
   "body_md": "memo markdown body here",
   "image_count": 2
@@ -76,11 +76,11 @@ memo_system/
 
 ```json
 {
-  "image_uid": "flomo-isaacbao-20260301--0255--01",
-  "memo_uid": "flomo-isaacbao-20260301--0255",
+  "image_uid": "flomo-exampleuser-20260301--0255--01",
+  "memo_uid": "flomo-exampleuser-20260301--0255",
   "order_in_memo": 1,
-  "image_relpath": "store/images/2026/2026-03/flomo-isaacbao-20260301--0255--01.png",
-  "source_relpath": "2026/flomo@IsaacBao-20260301/file/2026-03-04/1198733/146c43269a10922e56c749c7203e276c.png"
+  "image_relpath": "store/images/2026/2026-03/flomo-exampleuser-20260301--0255--01.png",
+  "source_relpath": "2026/flomo@ExampleUser-20260301/file/2026-03-04/1198733/146c43269a10922e56c749c7203e276c.png"
 }
 ```
 
@@ -90,9 +90,9 @@ memo_system/
 
 ```json
 {
-  "memo_uid": "flomo-isaacbao-20250101--0042",
-  "image_uid": "flomo-isaacbao-20250101--0042--01",
-  "source_relpath": "2025/flomo@IsaacBao-20250101/file/...",
+  "memo_uid": "flomo-exampleuser-20250101--0042",
+  "image_uid": "flomo-exampleuser-20250101--0042--01",
+  "source_relpath": "2025/flomo@ExampleUser-20250101/file/...",
   "reason": "source_file_missing"
 }
 ```

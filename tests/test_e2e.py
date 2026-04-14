@@ -12,7 +12,7 @@ SAMPLE_HTML = """\
 <html>
 <head><meta charset="utf-8"></head>
 <body>
-<div class="name">@TestUser</div>
+<div class="name">@ExampleUser</div>
 <div class="date">于 2026-3-4 导出 3 条 MEMO</div>
 
 <div class="memo">
@@ -43,9 +43,9 @@ SAMPLE_HTML = """\
 
 def _setup_raw_dir(tmp_path: Path) -> Path:
     raw_root = tmp_path / "raw"
-    batch_dir = raw_root / "2026" / "flomo@TestUser-20260304"
+    batch_dir = raw_root / "2026" / "flomo@ExampleUser-20260304"
     batch_dir.mkdir(parents=True)
-    (batch_dir / "TestUser的笔记.html").write_text(SAMPLE_HTML, encoding="utf-8")
+    (batch_dir / "ExampleUser的笔记.html").write_text(SAMPLE_HTML, encoding="utf-8")
 
     file_dir = batch_dir / "file" / "2026-03-02" / "abc123"
     file_dir.mkdir(parents=True)
@@ -81,33 +81,33 @@ def test_end_to_end_parse_and_write(tmp_path: Path) -> None:
     assert len(missing_lines) == 1
 
     memo_1 = json.loads(memos_lines[0])
-    assert memo_1["memo_uid"] == "flomo-testuser-20260304--0001"
+    assert memo_1["memo_uid"] == "flomo-exampleuser-20260304--0001"
     assert memo_1["created_at"] == "2026-03-01T10:00:00"
     assert "**bold**" in memo_1["body_md"]
     assert memo_1["image_count"] == 0
 
     memo_2 = json.loads(memos_lines[1])
-    assert memo_2["memo_uid"] == "flomo-testuser-20260304--0002"
+    assert memo_2["memo_uid"] == "flomo-exampleuser-20260304--0002"
     assert memo_2["image_count"] == 1
 
     memo_3 = json.loads(memos_lines[2])
-    assert memo_3["memo_uid"] == "flomo-testuser-20260304--0003"
+    assert memo_3["memo_uid"] == "flomo-exampleuser-20260304--0003"
     assert memo_3["image_count"] == 2
     assert "#tag1" in memo_3["body_md"]
     assert "#tag2" in memo_3["body_md"]
 
     img_1 = json.loads(images_lines[0])
-    assert img_1["image_uid"] == "flomo-testuser-20260304--0002--01"
-    assert img_1["memo_uid"] == "flomo-testuser-20260304--0002"
+    assert img_1["image_uid"] == "flomo-exampleuser-20260304--0002--01"
+    assert img_1["memo_uid"] == "flomo-exampleuser-20260304--0002"
     assert img_1["order_in_memo"] == 1
     assert "store/images/2026/2026-03/" in img_1["image_relpath"]
     assert img_1["image_relpath"].endswith(".png")
 
     img_2 = json.loads(images_lines[1])
-    assert img_2["image_uid"] == "flomo-testuser-20260304--0003--02"
+    assert img_2["image_uid"] == "flomo-exampleuser-20260304--0003--02"
 
     missing_1 = json.loads(missing_lines[0])
-    assert missing_1["image_uid"] == "flomo-testuser-20260304--0003--01"
+    assert missing_1["image_uid"] == "flomo-exampleuser-20260304--0003--01"
     assert missing_1["reason"] == "source_file_missing"
 
 

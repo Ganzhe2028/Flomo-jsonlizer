@@ -41,10 +41,10 @@
 
 ```json
 {
-  "memo_uid": "flomo-isaacbao-20260301--0255",
+  "memo_uid": "flomo-exampleuser-20260301--0255",
   "created_at": "2026-03-04T13:06:44",
-  "source_export": "2026/flomo@IsaacBao-20260301",
-  "source_html": "2026/flomo@IsaacBao-20260301/IsaacBao的笔记.html",
+  "source_export": "2026/flomo@ExampleUser-20260301",
+  "source_html": "2026/flomo@ExampleUser-20260301/ExampleUser的笔记.html",
   "source_memo_ordinal": 255,
   "body_md": "今天读到一段话很有感触……",
   "image_count": 2
@@ -71,11 +71,11 @@
 
 ```json
 {
-  "image_uid": "flomo-isaacbao-20260301--0255--01",
-  "memo_uid": "flomo-isaacbao-20260301--0255",
+  "image_uid": "flomo-exampleuser-20260301--0255--01",
+  "memo_uid": "flomo-exampleuser-20260301--0255",
   "order_in_memo": 1,
-  "image_relpath": "store/images/2026/2026-03/flomo-isaacbao-20260301--0255--01.png",
-  "source_relpath": "2026/flomo@IsaacBao-20260301/file/2026-03-04/1198733/146c43269a10922e56c749c7203e276c.png"
+  "image_relpath": "store/images/2026/2026-03/flomo-exampleuser-20260301--0255--01.png",
+  "source_relpath": "2026/flomo@ExampleUser-20260301/file/2026-03-04/1198733/146c43269a10922e56c749c7203e276c.png"
 }
 ```
 
@@ -98,9 +98,9 @@
 
 ```json
 {
-  "memo_uid": "flomo-isaacbao-20250101--0042",
-  "image_uid": "flomo-isaacbao-20250101--0042--01",
-  "source_relpath": "2025/flomo@IsaacBao-20250101/file/2025-01-03/55321/abcdef1234567890.png",
+  "memo_uid": "flomo-exampleuser-20250101--0042",
+  "image_uid": "flomo-exampleuser-20250101--0042--01",
+  "source_relpath": "2025/flomo@ExampleUser-20250101/file/2025-01-03/55321/abcdef1234567890.png",
   "reason": "source_file_missing"
 }
 ```
@@ -109,7 +109,7 @@
 
 ## 5. 主键与外键关系
 
-```
+```text
 memos.jsonl
   memo_uid  ←── 主键
 
@@ -135,13 +135,13 @@ missing_images.jsonl
 
 ### memo_uid
 
-```
+```text
 flomo-{user}-{export_batch}--{ordinal}
 ```
 
 | 片段           | 说明                                       | 示例       |
 | -------------- | ------------------------------------------ | ---------- |
-| `user`         | flomo 用户名，lowercase，空格去除          | `isaacbao` |
+| `user`         | flomo 用户名，lowercase，空格去除          | `exampleuser` |
 | `export_batch` | 导出批次标识，通常为 `YYYYMMDD`            | `20260301` |
 | `ordinal`      | memo 在该批次中的顺序号，零填充至至少 4 位 | `0255`     |
 
@@ -149,7 +149,7 @@ flomo-{user}-{export_batch}--{ordinal}
 
 ### image_uid
 
-```
+```text
 {memo_uid}--{order}
 ```
 
@@ -169,13 +169,13 @@ flomo-{user}-{export_batch}--{ordinal}
 ### 7.2 source_export / source_html / source_relpath
 
 - 以 `raw/` 下的相对路径为基准，但字段值不包含 `raw/` 前缀。
-- 示例：源文件位于 `raw/2026/flomo@IsaacBao-20260301/`，则 `source_export` 值为 `2026/flomo@IsaacBao-20260301`。
+- 示例：源文件位于 `raw/2026/flomo@ExampleUser-20260301/`，则 `source_export` 值为 `2026/flomo@ExampleUser-20260301`。
 
 ### 7.3 image_relpath
 
 - 物理文件存放于 `store/images/YYYY/YYYY-MM/` 目录下。
 - 文件名与 `image_uid` 一致，扩展名为 `.png`。
-- 示例：`store/images/2026/2026-03/flomo-isaacbao-20260301--0255--01.png`
+- 示例：`store/images/2026/2026-03/flomo-exampleuser-20260301--0255--01.png`
 
 ### 7.4 raw/ 目录
 

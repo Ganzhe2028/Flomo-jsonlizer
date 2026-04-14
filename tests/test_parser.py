@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup, Tag
 
 
 def test_extract_batch_label() -> None:
-    assert _extract_batch_label("flomo@IsaacBao-20260301") == "20260301"
-    assert _extract_batch_label("flomo@SomeUser-20250115") == "20250115"
+    assert _extract_batch_label("flomo@TestUser-20260301") == "20260301"
+    assert _extract_batch_label("flomo@TestUser-20250115") == "20250115"
 
 
 def test_format_ordinal() -> None:
@@ -14,8 +14,8 @@ def test_format_ordinal() -> None:
 
 
 def test_slugify_user() -> None:
-    assert _slugify_user("IsaacBao") == "isaacbao"
-    assert _slugify_user("Some User") == "someuser"
+    assert _slugify_user("TestUser") == "testuser"
+    assert _slugify_user("Test User") == "testuser"
     assert _slugify_user("  Test  ") == "test"
 
 

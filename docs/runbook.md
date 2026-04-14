@@ -8,12 +8,12 @@
 
 - Python 3.11+
 - 依赖已安装：`pip install -e ".[dev]"`
-- `raw/` 目录中已放置 flomo 导出文件夹
+- 推荐先使用 `examples/raw/` 中的匿名示例数据验证流程
 
-### raw/ 目录结构预期
+### 示例数据目录结构（推荐）
 
-```
-raw/
+```text
+examples/raw/
 └── YYYY/
     └── flomo@{User}-{YYYYMMDD}/
         ├── {User}的笔记.html
@@ -32,12 +32,12 @@ raw/
 ### 命令
 
 ```bash
-python scripts/import_raw.py --raw-dir raw/ --store-dir store/
+python scripts/build_store.py --raw-root examples/raw --store-root tmp/example-store
 ```
 
 ### 行为
 
-1. 扫描 `raw/` 下所有 `flomo@*/` 文件夹
+1. 扫描 `examples/raw/` 下所有 `flomo@*/` 文件夹
 2. 解析每个 HTML 文件，提取所有 memo（按 HTML 中的出现顺序编号）
 3. 对每个 memo：
    - 生成 `memo_uid`：`flomo-{user}-{export_batch}--{ordinal}`
@@ -45,27 +45,27 @@ python scripts/import_raw.py --raw-dir raw/ --store-dir store/
    - 将 HTML 正文转为 Markdown 写入 `body_md`（去除 frontmatter）
    - 统计正文中引用的图片数量，写入 `image_count`
 4. 对每个图片引用：
-   - 在 `raw/` 中查找对应物理文件
-   - 文件存在 → 写入 `images.jsonl`，复制文件到 `store/images/YYYY/YYYY-MM/{image_uid}.png`
+   - 在 `examples/raw/` 中查找对应物理文件
+   - 文件存在 → 写入 `images.jsonl`，复制文件到 `{store-root}/images/YYYY/YYYY-MM/{image_uid}.png`
    - 文件缺失 → 写入 `missing_images.jsonl`
-5. 追加写入 `memos.jsonl`、`images.jsonl`、`missing_images.jsonl`
+5. 输出 `memos.jsonl`、`images.jsonl`、`missing_images.jsonl`
 
 ### 前置条件
 
-- `raw/` 目录结构符合预期
-- `store/` 目录已创建（项目骨架已包含）
+- `examples/raw/` 目录结构符合预期
+- `tmp/example-store/` 可由脚本自动创建
 
 ### 输出
 
-- `store/memos.jsonl` — 所有 memo 记录
-- `store/images.jsonl` — 所有图片记录
-- `store/missing_images.jsonl` — 所有缺失图片记录
-- `store/images/YYYY/YYYY-MM/*.png` — 归档后的图片文件
+- `tmp/example-store/memos.jsonl` — 所有 memo 记录
+- `tmp/example-store/images.jsonl` — 所有图片记录
+- `tmp/example-store/missing_images.jsonl` — 所有缺失图片记录
+- `tmp/example-store/images/YYYY/YYYY-MM/*` — 归档后的图片文件
 
 ### 注意
 
 - 此步骤会覆盖已有的 JSONL 文件（全量模式，非增量）
-- `raw/` 中的文件不会被修改
+- `examples/raw/` 中的文件不会被修改
 
 ---
 
@@ -74,7 +74,7 @@ python scripts/import_raw.py --raw-dir raw/ --store-dir store/
 ### 命令
 
 ```bash
-python scripts/validate_store.py --store-dir store/
+python scripts/validate_store.py --store-root tmp/example-store
 ```
 
 ### 行为
@@ -114,7 +114,7 @@ python scripts/validate_store.py --store-dir store/
 ### 命令
 
 ```bash
-python scripts/build_analytics.py --store-dir store/ --analytics-dir analytics/
+python scripts/build_analytics.py --store-root tmp/example-store --analytics-dir tmp/example-analytics
 ```
 
 ### 行为
@@ -129,9 +129,9 @@ python scripts/build_analytics.py --store-dir store/ --analytics-dir analytics/
 
 ### 输出
 
-- `analytics/memos.parquet`
-- `analytics/images.parquet`
-- `analytics/warehouse.duckdb`
+- `tmp/example-analytics/memos.parquet`
+- `tmp/example-analytics/images.parquet`
+- `tmp/example-analytics/warehouse.duckdb`
 
 ### 注意
 
@@ -145,7 +145,7 @@ python scripts/build_analytics.py --store-dir store/ --analytics-dir analytics/
 ### 命令
 
 ```bash
-python scripts/build_preview.py --store-dir store/ --preview-dir preview/
+python scripts/build_preview.py --store-root tmp/example-store --preview-dir tmp/example-preview
 ```
 
 ### 行为
@@ -156,7 +156,7 @@ python scripts/build_preview.py --store-dir store/ --preview-dir preview/
 
 ### 输出
 
-- `preview/monthly_markdown/YYYY-MM.md`
+- `tmp/example-preview/monthly_markdown/YYYY-MM.md`
 
 ### 注意
 
@@ -170,35 +170,29 @@ python scripts/build_preview.py --store-dir store/ --preview-dir preview/
 当 store 层数据需要完全重建时，按以下顺序执行：
 
 ```bash
-# 1. 清理 store 和 analytics（保留 raw/ 不动）
-rm -f store/memos.jsonl store/images.jsonl store/missing_images.jsonl
-rm -rf store/images/
-rm -rf analytics/
-rm -rf preview/
+# 1. 清理示例输出目录（保留 examples/raw/ 不动）
+rm -rf tmp/example-store tmp/example-analytics tmp/example-preview
 
-# 2. 重建空目录
-mkdir -p store/images analytics preview/monthly_markdown
+# 2. 从示例数据重新导入
+python scripts/build_store.py --raw-root examples/raw --store-root tmp/example-store
 
-# 3. 从 raw 重新导入
-python scripts/import_raw.py --raw-dir raw/ --store-dir store/
+# 3. 校验
+python scripts/validate_store.py --store-root tmp/example-store
 
-# 4. 校验
-python scripts/validate_store.py --store-dir store/
+# 4. 构建 analytics
+python scripts/build_analytics.py --store-root tmp/example-store --analytics-dir tmp/example-analytics
 
-# 5. 构建 analytics
-python scripts/build_analytics.py --store-dir store/ --analytics-dir analytics/
-
-# 6. 构建 preview
-python scripts/build_preview.py --store-dir store/ --preview-dir preview/
+# 5. 构建 preview
+python scripts/build_preview.py --store-root tmp/example-store --preview-dir tmp/example-preview
 ```
 
 ### 重建原则
 
-- `raw/` 是唯一的数据源头，永不动
-- `store/` 可从 `raw/` 完全重建
-- `analytics/` 可从 `store/` 完全重建
-- `preview/` 可从 `store/` 完全重建
-- 重建顺序：raw → store → analytics/preview（后两者可并行）
+- `examples/raw/` 是示例数据源头，永不动
+- `tmp/example-store/` 可从 `examples/raw/` 完全重建
+- `tmp/example-analytics/` 可从 `tmp/example-store/` 完全重建
+- `tmp/example-preview/` 可从 `tmp/example-store/` 完全重建
+- 重建顺序：examples/raw → example-store → example-analytics/example-preview（后两者可并行）
 
 ---
 
@@ -264,7 +258,7 @@ tools/apple/
 
 | 现象                           | 可能原因                    | 处理方式                            |
 | ------------------------------ | --------------------------- | ----------------------------------- |
-| 校验报 C3 不通过               | 导入时 image_count 计算错误 | 重新运行 import_raw.py              |
+| 校验报 C3 不通过               | 导入时 image_count 计算错误 | 重新运行 build_store.py             |
 | 校验报 C8 图片文件不存在       | 复制图片时目标路径错误      | 检查 `image_relpath` 格式，重新导入 |
-| 校验报 C9 source 文件缺失      | raw/ 中确实缺文件           | 确认是否应归入 missing_images.jsonl |
+| 校验报 C9 source 文件缺失      | examples/raw/ 中确实缺文件  | 确认是否应归入 missing_images.jsonl |
 | DuckDB 查询结果与 JSONL 不一致 | Parquet 构建有误            | 重新运行 build_analytics.py         |

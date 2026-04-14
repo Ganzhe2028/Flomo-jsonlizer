@@ -13,10 +13,10 @@ from tests.conftest import write_jsonl
 
 def _valid_memo(**overrides) -> dict:
     base = {
-        "memo_uid": "flomo-isaacbao-20250115--0001",
+        "memo_uid": "flomo-testuser-20250115--0001",
         "created_at": "2025-01-15T10:30:00",
-        "source_export": "2025/flomo@IsaacBao-20250115",
-        "source_html": "2025/flomo@IsaacBao-20250115/2501.html",
+        "source_export": "2025/flomo@TestUser-20250115",
+        "source_html": "2025/flomo@TestUser-20250115/2501.html",
         "source_memo_ordinal": 1,
         "body_md": "Hello world",
         "image_count": 0,
@@ -27,11 +27,11 @@ def _valid_memo(**overrides) -> dict:
 
 def _valid_image(**overrides) -> dict:
     base = {
-        "image_uid": "flomo-isaacbao-20250115--0001--01",
-        "memo_uid": "flomo-isaacbao-20250115--0001",
+        "image_uid": "flomo-testuser-20250115--0001--01",
+        "memo_uid": "flomo-testuser-20250115--0001",
         "order_in_memo": 1,
-        "image_relpath": "store/images/2025/2025-01/flomo-isaacbao-20250115--0001--01.png",
-        "source_relpath": "2025/flomo@IsaacBao-20250115/file/2025-01-15/abc/photo.png",
+        "image_relpath": "store/images/2025/2025-01/flomo-testuser-20250115--0001--01.png",
+        "source_relpath": "2025/flomo@TestUser-20250115/file/2025-01-15/abc/photo.png",
     }
     base.update(overrides)
     return base
@@ -39,9 +39,9 @@ def _valid_image(**overrides) -> dict:
 
 def _valid_missing(**overrides) -> dict:
     base = {
-        "memo_uid": "flomo-isaacbao-20250115--0001",
-        "image_uid": "flomo-isaacbao-20250115--0001--02",
-        "source_relpath": "2025/flomo@IsaacBao-20250115/file/2025-01-15/abc/missing.png",
+        "memo_uid": "flomo-testuser-20250115--0001",
+        "image_uid": "flomo-testuser-20250115--0001--02",
+        "source_relpath": "2025/flomo@TestUser-20250115/file/2025-01-15/abc/missing.png",
         "reason": "source_file_missing",
     }
     base.update(overrides)
@@ -163,8 +163,8 @@ class TestReferentialIntegrity:
     """Rules C4, C5: FK existence."""
 
     def test_image_refs_nonexistent_memo(self, tmp_store: Path):
-        write_jsonl(tmp_store / "memos.jsonl", [_valid_memo(memo_uid="flomo-isaacbao-20250115--0001", image_count=0)])
-        write_jsonl(tmp_store / "images.jsonl", [_valid_image(memo_uid="flomo-isaacbao-20250115--9999")])
+        write_jsonl(tmp_store / "memos.jsonl", [_valid_memo(memo_uid="flomo-testuser-20250115--0001", image_count=0)])
+        write_jsonl(tmp_store / "images.jsonl", [_valid_image(memo_uid="flomo-testuser-20250115--9999")])
         write_jsonl(tmp_store / "missing_images.jsonl", [])
 
         v = StoreValidator(store_root=tmp_store, project_root=tmp_store.parent)
@@ -175,7 +175,7 @@ class TestReferentialIntegrity:
     def test_missing_image_refs_nonexistent_memo(self, tmp_store: Path):
         write_jsonl(tmp_store / "memos.jsonl", [_valid_memo(image_count=0)])
         write_jsonl(tmp_store / "images.jsonl", [])
-        write_jsonl(tmp_store / "missing_images.jsonl", [_valid_missing(memo_uid="flomo-isaacbao-99999999--0001")])
+        write_jsonl(tmp_store / "missing_images.jsonl", [_valid_missing(memo_uid="flomo-testuser-99999999--0001")])
 
         v = StoreValidator(store_root=tmp_store, project_root=tmp_store.parent)
         report = v.validate()
@@ -187,7 +187,7 @@ class TestCrossTableConflict:
     """Rule C6: image_uid in both images and missing_images."""
 
     def test_image_uid_in_both_tables(self, tmp_store: Path):
-        uid = "flomo-isaacbao-20250115--0001--01"
+        uid = "flomo-testuser-20250115--0001--01"
         write_jsonl(tmp_store / "memos.jsonl", [_valid_memo(image_count=2)])
         write_jsonl(tmp_store / "images.jsonl", [_valid_image(image_uid=uid)])
         write_jsonl(tmp_store / "missing_images.jsonl", [_valid_missing(image_uid=uid)])
