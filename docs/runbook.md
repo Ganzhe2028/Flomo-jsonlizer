@@ -202,7 +202,65 @@ python scripts/build_preview.py --store-dir store/ --preview-dir preview/
 
 ---
 
-## 7. 故障排查
+## 7. macOS Launcher — Memo Sync
+
+Spotlight 可搜索并启动的 GUI 工具，一键执行 validate → build 流程。
+
+### 依赖
+
+- [swiftDialog](https://swiftdialog.app/) — GUI 状态窗
+- Python 3.11+ 及项目依赖（beautifulsoup4 等）
+
+### 安装 swiftDialog
+
+```bash
+brew install swiftdialog
+```
+
+### 编译 Launcher App
+
+```bash
+tools/apple/build_app.sh
+# 或指定输出目录：
+tools/apple/build_app.sh ~/Applications
+```
+
+默认输出到 `~/Applications/Memo Sync.app`。
+
+### 通过 Spotlight 启动
+
+1. 打开 Spotlight（⌘ + Space）
+2. 输入 "Memo Sync"
+3. 回车启动
+
+### 行为流程
+
+1. 弹出 swiftDialog 状态窗
+2. 自动运行 `validate_store.py --store-root store`
+3. 校验通过 → 自动运行 `build_store.py --raw-root raw --store-root store`
+4. 校验失败 → Build 跳过，窗口显示失败日志尾部
+5. 完成后可点击按钮：
+   - **Open Cursor** → 用 Cursor 打开项目目录（无 Cursor 则降级为 Finder）
+   - **Open Finder** → 用 Finder 打开项目目录
+
+### 文件结构
+
+```
+scripts/launch_memo_sync.sh   # Shell helper：执行 pipeline + 更新 GUI
+tools/apple/
+  Memo Sync.applescript        # AppleScript 源码
+  build_app.sh                 # 编译 .app 的脚本
+```
+
+### 注意
+
+- Shell helper 根据自身位置推导项目根目录，不需要手写绝对路径
+- swiftDialog 未安装时会弹出错误提示，不会静默失败
+- 项目路径变更后需要重新编译 .app（`build_app.sh` 会注入路径）
+
+---
+
+## 8. 故障排查
 
 | 现象                           | 可能原因                    | 处理方式                            |
 | ------------------------------ | --------------------------- | ----------------------------------- |

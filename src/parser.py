@@ -77,6 +77,9 @@ def _html_to_markdown(content_div: Tag) -> str:
             else:
                 parts.append(link_text)
 
+        elif tag in ("ul", "ol"):
+            parts.append(_html_list_to_markdown(element))
+
         elif tag == "img":
             pass
 
@@ -126,6 +129,18 @@ def _process_inline(element: Tag) -> str:
 
 def _get_inner_text(tag: Tag) -> str:
     return tag.get_text(strip=True)
+
+
+def _html_list_to_markdown(element: Tag) -> str:
+    ordered = element.name == "ol"
+    items: list[str] = []
+    for idx, li in enumerate(element.find_all("li", recursive=False), start=1):
+        inner = _html_to_markdown(li).replace("\n", " ").strip()
+        if ordered:
+            items.append(f"{idx}. {inner}")
+        else:
+            items.append(f"- {inner}")
+    return "\n".join(items)
 
 
 def _parse_time(time_div: Tag) -> Optional[str]:
